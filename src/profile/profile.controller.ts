@@ -15,7 +15,7 @@ import { ProfileService } from './profile.service';
 import { RolesGuard } from '../users/roles/roles.guard';
 import { Roles } from '../users/roles/roles.decorator';
 
-@Controller('api')
+@Controller()
 export class ProfileController {
   public constructor(private readonly profileService: ProfileService) {}
 

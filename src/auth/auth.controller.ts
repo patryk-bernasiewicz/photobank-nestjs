@@ -26,7 +26,7 @@ import { Roles } from '../users/roles/roles.decorator';
 
 const PASSWORD_MIN_LENGTH = 6;
 
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(
     private readonly userService: UsersService,

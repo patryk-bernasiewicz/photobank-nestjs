@@ -16,7 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from './roles/roles.guard';
 import { UpdateUserDto } from './updateUser.dto';
 
-@Controller('api/users')
+@Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
