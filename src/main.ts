@@ -14,6 +14,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
+  if (process.env.GLOBAL_PREFIX) {
+    app.setGlobalPrefix(process.env.GLOBAL_PREFIX);
+  }
 
   const corsOptions: cors.CorsOptions = {
     credentials: true,
