@@ -9,13 +9,11 @@ env:
   APP_NAME: "photobank-nest"
 
 jobs:
-  deply:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
-        env:
-          APP_NAME: "photobank-nest"
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
