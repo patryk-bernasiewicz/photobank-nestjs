@@ -14,15 +14,13 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { User, UserRole } from '@prisma/client';
+import { User } from '@prisma/client';
 import { omit } from 'lodash';
 
 import { CreateUserDto } from '../users/createUser.dto';
 import { UsersService } from '../users/users.service';
 import { MailerService } from '../mailer/mailer.service';
 import { AuthService } from './auth.service';
-import { RolesGuard } from '../users/roles/roles.guard';
-import { Roles } from '../users/roles/roles.decorator';
 
 const PASSWORD_MIN_LENGTH = 6;
 
@@ -90,6 +88,16 @@ export class AuthController {
       });
     }
 
+    const existingEmail = await this.userService.findByUsernameOrEmail(
+      userDto.email,
+    );
+    const existingUsername = await this.userService.findByUsernameOrEmail(
+      userDto.email,
+    );
+    if (existingEmail || existingUsername) {
+      throw new BadRequestException('Email or username already exists');
+    }
+
     const password = await this.authService.hashPassword(userDto.password);
     const userWithHashedPassword = {
       ...userDto,
@@ -102,10 +110,13 @@ export class AuthController {
     const confirmationTokenData =
       await this.userService.createEmailConfirmationToken(createdUser.id);
 
+    const activationUrl = process.env.FRONTEND_BASE_URL
+      ? `${process.env.FRONTEND_BASE_URL}/account/confirm-email/${confirmationTokenData.token}`
+      : '';
     this.mailerService.sendMail(
       userDto.email,
       'Confirm email',
-      `Your confirmation token: ${confirmationTokenData.token}`,
+      `Your confirmation token: ${confirmationTokenData.token} ${activationUrl}`,
     );
 
     return omit(createdUser, 'password');
